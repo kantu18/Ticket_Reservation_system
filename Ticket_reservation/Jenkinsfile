@@ -1,0 +1,39 @@
+pipeline{
+    agent any
+    tools {
+        maven "Maven"
+    }
+    stages{
+        stage('Build Project'){
+            steps{
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'Snehasish', url: 'https://github.com/kantu18/Ticket_Reservation_system/']])
+                dir('C:\\Users\\sneha\\.jenkins\\workspace\\Spring_boot_Docker_MongoDB_Swagger\\Ticket_reservation') {
+                    bat 'mvn clean install'
+                }
+            }
+        }
+        stage('Create Docker image') {
+            steps {
+                script {
+                    dir('C:\\Users\\sneha\\.jenkins\\workspace\\Spring_boot_Docker_MongoDB_Swagger\\Ticket_reservation') {
+                    bat 'docker build -t ticketreservation .'
+                    }
+                }
+            }
+        }
+        stage('Push image to docker hub') {
+            steps {
+                script {
+                  withCredentials([string(credentialsId: 'snehasis18', variable: 'snehasis')]) {
+                        writeFile file: 'temp.txt', text: "${snehasis}"
+                        bat 'docker login -u snehasis18 --password-stdin < temp.txt'
+                       
+                        bat 'docker tag ticketreservation:latest snehasis18/ticketreservation'
+                        bat 'docker push snehasis18/ticketreservation'
+                        bat 'del temp.txt'
+                    }
+                }
+            }
+        }
+    }
+}
