@@ -82,24 +82,28 @@ public class Ticket_controller {
 		}
 	}
 	
+	//search by trainname
 	@GetMapping("/findtrainname")
 	public ResponseEntity<List<Ticket>> findTrainnamebyAddress()
 	{
 		return new ResponseEntity<List<Ticket>>(service.findTrainbyaddress(),HttpStatus.OK);
 	}
 	
+	//search by address
 	@GetMapping("/findPricesbyAddress")
 	public ResponseEntity<List<Ticket>> findPrices()
 	{
 		return new ResponseEntity<List<Ticket>>(service.findbyPrices(),HttpStatus.OK);
 	}
 	
+	//Update Details of ticket
 	@PostMapping("/updateDetails")
 	public ResponseEntity<Ticket> updateDetails(@RequestBody Ticket ticket)
 	{
 		return new ResponseEntity<Ticket>(service.updateDetails(ticket),HttpStatus.CREATED);
 	}
 	
+	//Delete ticket details
 	@DeleteMapping("/delete/{ticketid}")
 	public String deleteTicket(@PathVariable String ticketid)
 	{
